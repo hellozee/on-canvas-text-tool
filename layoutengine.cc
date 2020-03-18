@@ -1,17 +1,14 @@
 #include "layoutengine.hh"
 
-LayoutEngine::~LayoutEngine()
-{
-    raqm_destroy(m_rq);
-    FT_Done_Face(m_face);
-    FT_Done_FreeType(m_library);
-}
-
 QGlyphRun
 LayoutEngine::calculate(const Layout& layout)
 {
     if (layout.m_font.isEmpty() || layout.m_fontSize == 0 || layout.m_text.isEmpty())
         return {};
+
+    raqm_t* m_rq;
+    FT_Face m_face;
+    FT_Library m_library;
 
     Q_ASSERT(FT_Init_FreeType(&m_library) == 0);
     Q_ASSERT(FT_New_Face(m_library, layout.m_font.toUtf8().data(), 0, &m_face) == 0);
@@ -52,6 +49,10 @@ LayoutEngine::calculate(const Layout& layout)
     glyphRun.setRawFont(rawFont);
     glyphRun.setGlyphIndexes(glyphIndexes);
     glyphRun.setPositions(glyphPositions);
+
+    raqm_destroy(m_rq);
+    FT_Done_Face(m_face);
+    FT_Done_FreeType(m_library);
 
     return glyphRun;
 }

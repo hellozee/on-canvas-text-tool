@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_HH
 #define MAINWINDOW_HH
 
+#include "betterfontcb.hh"
 #include "paintwidget.hh"
 #include <QMainWindow>
 
@@ -19,9 +20,11 @@ class MainWindow : public QMainWindow {
 
     private:
     void setUpDock();
+    void fontChanged(int index);
 
     private:
     Ui::MainWindow* ui;
     PaintWidget* m_canvas;
+    BetterFontCB* m_fontComboBox;
 };
 #endif // MAINWINDOW_HH

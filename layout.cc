@@ -7,8 +7,9 @@ Layout::draw(QPainter& gc, const QPointF& pos, const QRect& clipRect)
 {
     LayoutEngine engine;
     auto glyphRun = engine.calculate(*this);
+    auto font     = glyphRun.rawFont();
     if (!glyphRun.isEmpty()) {
-        gc.drawGlyphRun(pos, glyphRun);
+        gc.drawGlyphRun(pos + QPoint(0, font.ascent()), glyphRun);
     }
 }
 

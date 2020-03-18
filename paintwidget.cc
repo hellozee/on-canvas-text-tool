@@ -70,12 +70,10 @@ PaintWidget::keyPressEvent(QKeyEvent* event)
         Layout l;
         l.addChar(event->text());
         m_layouts.push_back(l);
-        update();
-        return;
+    } else {
+        Layout& l = m_layouts.last();
+        l.addChar(event->text());
     }
-
-    Layout& l = m_layouts.last();
-    l.addChar(event->text());
     update();
 }
 
@@ -83,15 +81,15 @@ void
 PaintWidget::setFont(QString font)
 {
     if (m_layouts.isEmpty()) {
-        qDebug() << 2;
         Layout l;
         l.setFont(font);
         m_layouts.push_back(l);
-        return;
+    } else {
+        Layout& l = m_layouts.last();
+        l.setFont(font);
     }
 
-    Layout& l = m_layouts.last();
-    l.setFont(font);
+    update();
 }
 
 void
@@ -102,8 +100,10 @@ PaintWidget::setFontSize(unsigned size)
         l.setFontSize(size);
         m_layouts.push_back(l);
         return;
+    } else {
+        Layout& l = m_layouts.last();
+        l.setFontSize(size);
     }
 
-    Layout& l = m_layouts.last();
-    l.setFontSize(size);
+    update();
 }

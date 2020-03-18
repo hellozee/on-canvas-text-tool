@@ -8,7 +8,7 @@
 
 class LayoutEngine {
     public:
-    QGlyphRun calculate(const Layout& layout);
+    QGlyphRun calculate(const Layout& layout, QString text);
 };
 
 #endif // LAYOUTENGINE_HH

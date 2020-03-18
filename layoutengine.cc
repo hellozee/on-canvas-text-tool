@@ -1,9 +1,10 @@
 #include "layoutengine.hh"
+#include <QDebug>
 
 QGlyphRun
-LayoutEngine::calculate(const Layout& layout)
+LayoutEngine::calculate(const Layout& layout, QString text)
 {
-    if (layout.m_font.isEmpty() || layout.m_fontSize == 0 || layout.m_text.isEmpty())
+    if (text.isEmpty() || layout.m_fontSize == 0 || layout.m_text.isEmpty())
         return {};
 
     raqm_t* m_rq;
@@ -17,7 +18,7 @@ LayoutEngine::calculate(const Layout& layout)
     m_rq = raqm_create();
     Q_ASSERT(m_rq);
 
-    auto charBytes = layout.m_text.toUtf8();
+    auto charBytes = text.toUtf8();
 
     raqm_set_text_utf8(m_rq, charBytes, static_cast<size_t>(charBytes.size()));
     Q_ASSERT(raqm_set_freetype_face(m_rq, m_face));

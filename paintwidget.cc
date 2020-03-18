@@ -8,6 +8,10 @@ PaintWidget::PaintWidget(QWidget* parent)
     : QWidget(parent)
 {
     setFocusPolicy(Qt::StrongFocus);
+
+    m_timer.setInterval(500);
+    connect(&m_timer, &QTimer::timeout, this, &PaintWidget::flipIBarStatus);
+    m_timer.start();
 }
 
 void
@@ -19,12 +23,18 @@ PaintWidget::paintEvent(QPaintEvent* event)
     gc.setPen(Qt::black);
     gc.drawRect(m_boundingRect);
 
+    gc.translate(QPointF(m_margin.top(), m_margin.left()));
+
     if (m_boundingRectDone) {
-        //        int size = m_layoutEngine.fontSize();
-        //        gc.fillRect(QRect(m_boundingRect.topLeft() + QPoint(m_margin.top(), m_margin.left()), QSize(2, size)),
-        //                    Qt::black);
         for (Layout& l : m_layouts) {
             l.draw(gc, m_boundingRect.topLeft(), m_boundingRect);
+        }
+
+        Layout& l = m_layouts.last();
+
+        if (drawIBar) {
+            QPoint cursorPos = l.cursor().toPoint();
+            gc.fillRect(QRect(cursorPos, QSize(1, l.fontSize())), Qt::black);
         }
     }
 }
@@ -105,5 +115,12 @@ PaintWidget::setFontSize(unsigned size)
         l.setFontSize(size);
     }
 
+    update();
+}
+
+void
+PaintWidget::flipIBarStatus()
+{
+    drawIBar = !drawIBar;
     update();
 }

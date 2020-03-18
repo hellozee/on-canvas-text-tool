@@ -36,9 +36,15 @@ Layout::addChar(const QString& _char)
         m_text.push_back(QString());
     }
 
-    QString& str = m_text.last();
+    QString& str = m_text[m_cursor.line];
     if (_char == "\r") {
-        m_text.push_back(QString());
+        if (m_cursor.pos == str.size()) {
+            m_text.push_back(QString());
+        } else {
+            auto partOfString = str.right(str.size() - m_cursor.pos);
+            str.resize(str.size() - m_cursor.pos);
+            m_text.insert(m_cursor.line + 1, partOfString);
+        }
         m_cursor.line++;
         m_cursor.pos = 0;
         return;
@@ -49,7 +55,7 @@ Layout::addChar(const QString& _char)
         return;
     }
 
-    str += _char;
+    str.insert(m_cursor.pos, _char);
     m_cursor.pos++;
 }
 

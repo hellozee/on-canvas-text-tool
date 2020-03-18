@@ -82,7 +82,6 @@ PaintWidget::keyPressEvent(QKeyEvent* event)
 void
 PaintWidget::setFont(QString font)
 {
-    qDebug() << m_lay;
     if (m_layouts.isEmpty()) {
         qDebug() << 2;
         Layout l;

@@ -33,7 +33,7 @@ PaintWidget::paintEvent(QPaintEvent* event)
         Layout& l = m_layouts.last();
 
         if (drawIBar) {
-            QPoint cursorPos = l.cursor().toPoint();
+            QPoint cursorPos = l.cursorPos().toPoint();
             gc.fillRect(QRect(cursorPos, QSize(1, l.fontSize())), Qt::black);
         }
     }
@@ -74,6 +74,41 @@ PaintWidget::keyPressEvent(QKeyEvent* event)
 {
     if (!m_boundingRectDone) {
         return;
+    }
+
+    switch (event->key()) {
+        case Qt::Key_Left: {
+            if (!m_layouts.isEmpty()) {
+                Layout& l = m_layouts.last();
+                l.cursorToLeft();
+            }
+            update();
+            return;
+        }
+        case Qt::Key_Right: {
+            if (!m_layouts.isEmpty()) {
+                Layout& l = m_layouts.last();
+                l.cursorToRight();
+            }
+            update();
+            return;
+        }
+        case Qt::Key_Up: {
+            if (!m_layouts.isEmpty()) {
+                Layout& l = m_layouts.last();
+                l.cursorToUp();
+            }
+            update();
+            return;
+        }
+        case Qt::Key_Down: {
+            if (!m_layouts.isEmpty()) {
+                Layout& l = m_layouts.last();
+                l.cursorToDown();
+            }
+            update();
+            return;
+        }
     }
 
     if (m_layouts.isEmpty()) {

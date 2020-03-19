@@ -7,7 +7,7 @@ class TextLine {
     public:
     TextLine();
     QRect boundingRect();
-    void draw(QPainter& gc, QPointF topLeft);
+    void draw(QPainter& gc, QPointF topLeft, bool lineDrawCursor);
     void addChar(QString _char);
     bool deleteChar();
 
@@ -17,8 +17,11 @@ class TextLine {
     QVector<TextChunk> chunks();
     QVector<QString> words();
     unsigned currentChunkPos();
+
     bool cursorToLeft();
     bool cursorToRight();
+    qreal cursorOffset();
+    void setCursorOffset(qreal offset);
 
     TextLine newLine();
     void calculateChunks();

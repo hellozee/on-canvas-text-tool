@@ -11,11 +11,20 @@ void
 TextLayout::draw(QPainter& gc, const QPointF& pos, const QRect& clipRect)
 {
     gc.setClipRect(clipRect);
-    int nextLine = m_margin.top();
+    int nextLine        = m_margin.top();
+    int i               = 0;
+    bool lineDrawCursor = false;
     for (TextLine line : m_lines) {
+
+        if (m_drawCursor && i == m_currentLine) {
+            lineDrawCursor = true;
+        }
+
         line.calculateChunks();
-        line.draw(gc, pos + QPoint(m_margin.left(), nextLine));
+        line.draw(gc, pos + QPoint(m_margin.left(), nextLine), lineDrawCursor);
         nextLine += line.boundingRect().height();
+        lineDrawCursor = false;
+        i++;
     }
 }
 
@@ -59,38 +68,65 @@ TextLayout::setFontSize(unsigned size)
     m_lines[m_currentLine].setFontSize(size);
 }
 
-QPointF
-TextLayout::cursorPos()
-{
-    return m_cursorPos;
-}
-
-bool
+void
 TextLayout::cursorToRight()
 {
-    return true;
+    if (!m_lines[m_currentLine].cursorToRight()) {
+        cursorToDown();
+    }
 }
 
-bool
+void
 TextLayout::cursorToLeft()
 {
-    return true;
+    if (!m_lines[m_currentLine].cursorToLeft()) {
+        cursorToUp();
+    }
 }
 
-bool
+void
 TextLayout::cursorToUp()
 {
-    return true;
+    if (m_currentLine != 0) {
+        qreal offset = m_lines[m_currentLine].cursorOffset();
+        m_currentLine--;
+        m_lines[m_currentLine].setCursorOffset(offset);
+    }
 }
 
-bool
+void
 TextLayout::cursorToDown()
 {
-    return true;
+    if (m_currentLine < m_lines.size() - 1) {
+        qreal offset = m_lines[m_currentLine].cursorOffset();
+        m_currentLine++;
+        m_lines[m_currentLine].setCursorOffset(offset);
+    }
 }
 
 void
 TextLayout::setMargins(QMargins margins)
 {
     m_margin = margins;
+}
+
+void
+TextLayout::drawCursor(bool draw)
+{
+    m_drawCursor = draw;
+}
+
+void
+TextLayout::moveCursorTo(QPoint pos)
+{
+    int nextLine = m_margin.top();
+    for (int i = 0; i < m_lines.size(); i++) {
+        m_lines[i].calculateChunks();
+        nextLine += m_lines[i].boundingRect().height();
+        if (pos.y() < nextLine) {
+            m_lines[i].setCursorOffset(pos.x());
+            m_currentLine = i;
+            break;
+        }
+    }
 }

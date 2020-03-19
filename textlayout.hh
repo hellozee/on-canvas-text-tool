@@ -15,17 +15,19 @@ struct TextLayout {
     void setFont(QString font);
     void setMargins(QMargins margins);
 
-    QPointF cursorPos();
-    bool cursorToRight();
-    bool cursorToLeft();
-    bool cursorToUp();
-    bool cursorToDown();
+    void cursorToRight();
+    void cursorToLeft();
+    void cursorToUp();
+    void cursorToDown();
+
+    void drawCursor(bool draw);
+    void moveCursorTo(QPoint pos);
 
     private:
-    QPointF m_cursorPos;
     unsigned m_currentLine = 0;
     QVector<TextLine> m_lines;
     QMargins m_margin = { 0, 0, 0, 0 };
+    bool m_drawCursor = false;
 };
 
 #endif // LAYOUT_HH

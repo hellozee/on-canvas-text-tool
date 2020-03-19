@@ -37,6 +37,10 @@ PaintWidget::mousePressEvent(QMouseEvent* event)
         m_boundingRect.setTopLeft(event->pos());
         return;
     }
+
+    if (m_boundingRect.contains(event->pos())) {
+        m_layout.moveCursorTo(event->pos() - m_boundingRect.topLeft());
+    }
 }
 
 void
@@ -112,5 +116,6 @@ void
 PaintWidget::flipIBarStatus()
 {
     drawIBar = !drawIBar;
+    m_layout.drawCursor(drawIBar);
     update();
 }

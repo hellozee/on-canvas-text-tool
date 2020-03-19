@@ -13,10 +13,17 @@ TextLine::boundingRect()
 }
 
 void
-TextLine::draw(QPainter& gc, QPointF topLeft)
+TextLine::draw(QPainter& gc, QPointF topLeft, bool lineDrawCursor)
 {
+    int i                = 0;
+    bool chunkDrawCursor = false;
     for (TextChunk& chunk : m_textChunks) {
-        chunk.draw(gc, topLeft + QPointF(0, m_boundingRect.height()));
+        if (lineDrawCursor && i == m_currentChunk) {
+            chunkDrawCursor = true;
+        }
+        chunk.draw(gc, topLeft + QPointF(0, m_boundingRect.height()), chunkDrawCursor);
+        chunkDrawCursor = false;
+        i++;
     }
 }
 
@@ -119,4 +126,27 @@ TextLine::calculateChunks()
     }
 
     m_boundingRect.setSize(QSize(width, maxheight));
+}
+
+qreal
+TextLine::cursorOffset()
+{
+    qreal offset = m_textChunks[m_currentChunk].cursorOffset();
+    for (int i = 0; i < m_currentChunk; i++) {
+        offset += m_textChunks[i].boundingRect().width();
+    }
+    return offset;
+}
+
+void
+TextLine::setCursorOffset(qreal offset)
+{
+    for (int i = 0; i < m_textChunks.size(); i++) {
+        if (m_textChunks[i].boundingRect().width() > offset) {
+            m_currentChunk = i;
+            m_textChunks[i].setCursorOffset(offset);
+            break;
+        }
+        offset -= m_textChunks[i].boundingRect().width();
+    }
 }

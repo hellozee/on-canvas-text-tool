@@ -12,6 +12,8 @@ PaintWidget::PaintWidget(QWidget* parent)
     m_timer.setInterval(500);
     connect(&m_timer, &QTimer::timeout, this, &PaintWidget::flipIBarStatus);
     m_timer.start();
+
+    m_layout.setMargins(QMargins{ 5, 5, 5, 5 });
 }
 
 void
@@ -23,19 +25,8 @@ PaintWidget::paintEvent(QPaintEvent* event)
     gc.setPen(Qt::black);
     gc.drawRect(m_boundingRect);
 
-    gc.translate(QPointF(m_margin.top(), m_margin.left()));
-
     if (m_boundingRectDone) {
-        for (Layout& l : m_layouts) {
-            l.draw(gc, m_boundingRect.topLeft(), m_boundingRect);
-        }
-
-        Layout& l = m_layouts.last();
-
-        if (drawIBar) {
-            QPoint cursorPos = l.cursorPos().toPoint();
-            gc.fillRect(QRect(cursorPos, QSize(1, l.fontSize())), Qt::black);
-        }
+        m_layout.draw(gc, m_boundingRect.topLeft(), m_boundingRect);
     }
 }
 
@@ -78,78 +69,42 @@ PaintWidget::keyPressEvent(QKeyEvent* event)
 
     switch (event->key()) {
         case Qt::Key_Left: {
-            if (!m_layouts.isEmpty()) {
-                Layout& l = m_layouts.last();
-                l.cursorToLeft();
-            }
+            m_layout.cursorToLeft();
             update();
             return;
         }
         case Qt::Key_Right: {
-            if (!m_layouts.isEmpty()) {
-                Layout& l = m_layouts.last();
-                l.cursorToRight();
-            }
+            m_layout.cursorToRight();
             update();
             return;
         }
         case Qt::Key_Up: {
-            if (!m_layouts.isEmpty()) {
-                Layout& l = m_layouts.last();
-                l.cursorToUp();
-            }
+            m_layout.cursorToUp();
             update();
             return;
         }
         case Qt::Key_Down: {
-            if (!m_layouts.isEmpty()) {
-                Layout& l = m_layouts.last();
-                l.cursorToDown();
-            }
+            m_layout.cursorToDown();
             update();
             return;
         }
     }
 
-    if (m_layouts.isEmpty()) {
-        Layout l;
-        l.addChar(event->text());
-        m_layouts.push_back(l);
-    } else {
-        Layout& l = m_layouts.last();
-        l.addChar(event->text());
-    }
+    m_layout.addChar(event->text());
     update();
 }
 
 void
 PaintWidget::setFont(QString font)
 {
-    if (m_layouts.isEmpty()) {
-        Layout l;
-        l.setFont(font);
-        m_layouts.push_back(l);
-    } else {
-        Layout& l = m_layouts.last();
-        l.setFont(font);
-    }
-
+    m_layout.setFont(font);
     update();
 }
 
 void
 PaintWidget::setFontSize(unsigned size)
 {
-    if (m_layouts.isEmpty()) {
-        Layout l;
-        l.setFontSize(size);
-        m_layouts.push_back(l);
-        return;
-    } else {
-        Layout& l = m_layouts.last();
-        l.setFontSize(size);
-    }
-
+    m_layout.setFontSize(size);
     update();
 }
 

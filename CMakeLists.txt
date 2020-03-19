@@ -21,13 +21,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${RAQM_INCLUDE_DIRS})
 
 add_executable(
     on-canvas-text-tool
-    main.cpp
+    main.cc
     mainwindow.cc
     mainwindow.ui
     paintwidget.cc
     layoutengine.cc
-    layout.cc
+    textlayout.cc
     betterfontcb.cc
+    textline.cc
+    textchunk.cc
 )
 
 target_link_libraries(on-canvas-text-tool PRIVATE Qt5::Widgets ${RAQM_LIBRARIES} ${FC_LIBRARIES})

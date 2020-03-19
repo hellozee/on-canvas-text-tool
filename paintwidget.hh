@@ -1,7 +1,7 @@
 #ifndef PAINTWIDGET_HH
 #define PAINTWIDGET_HH
 
-#include "layout.hh"
+#include "textlayout.hh"
 #include <QTimer>
 #include <QWidget>
 
@@ -26,8 +26,7 @@ class PaintWidget : public QWidget {
     private:
     QRect m_boundingRect;
     bool m_boundingRectDone = false, drawIBar = false;
-    QMargins m_margin{ 5, 5, 5, 5 };
-    QVector<Layout> m_layouts;
+    TextLayout m_layout;
     QTimer m_timer;
 };
 

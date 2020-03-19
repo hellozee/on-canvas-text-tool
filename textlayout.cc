@@ -72,7 +72,7 @@ void
 TextLayout::cursorToRight()
 {
     if (!m_lines[m_currentLine].cursorToRight()) {
-        cursorToDown();
+        cursorToDown(false);
     }
 }
 
@@ -80,27 +80,33 @@ void
 TextLayout::cursorToLeft()
 {
     if (!m_lines[m_currentLine].cursorToLeft()) {
-        cursorToUp();
+        cursorToUp(false);
     }
 }
 
 void
-TextLayout::cursorToUp()
+TextLayout::cursorToUp(bool calledFromCanvas)
 {
     if (m_currentLine != 0) {
         qreal offset = m_lines[m_currentLine].cursorOffset();
         m_currentLine--;
         m_lines[m_currentLine].setCursorOffset(offset);
+        if (!calledFromCanvas) {
+            m_lines[m_currentLine].resetCursor();
+        }
     }
 }
 
 void
-TextLayout::cursorToDown()
+TextLayout::cursorToDown(bool calledFromCanvas)
 {
     if (m_currentLine < m_lines.size() - 1) {
         qreal offset = m_lines[m_currentLine].cursorOffset();
         m_currentLine++;
         m_lines[m_currentLine].setCursorOffset(offset);
+        if (!calledFromCanvas) {
+            m_lines[m_currentLine].resetCursor();
+        }
     }
 }
 

@@ -145,8 +145,23 @@ TextLine::setCursorOffset(qreal offset)
         if (m_textChunks[i].boundingRect().width() > offset) {
             m_currentChunk = i;
             m_textChunks[i].setCursorOffset(offset);
-            break;
+            return;
         }
         offset -= m_textChunks[i].boundingRect().width();
+    }
+
+    m_currentChunk = m_textChunks.count() - 1;
+    m_textChunks[m_currentChunk].setCursorOffset(m_textChunks[m_currentChunk].boundingRect().width());
+}
+
+void
+TextLine::resetCursor(bool toLast)
+{
+    if (!toLast) {
+        m_currentChunk = 0;
+        m_textChunks[m_currentChunk].setCursorOffset(0);
+    } else {
+        m_currentChunk = m_textChunks.count() - 1;
+        m_textChunks[m_currentChunk].setCursorOffset(m_textChunks[m_currentChunk].boundingRect().width());
     }
 }

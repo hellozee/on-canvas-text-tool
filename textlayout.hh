@@ -17,8 +17,8 @@ struct TextLayout {
 
     void cursorToRight();
     void cursorToLeft();
-    void cursorToUp();
-    void cursorToDown();
+    void cursorToUp(bool calledFromCanvas = true);
+    void cursorToDown(bool calledFromCanvas = true);
 
     void drawCursor(bool draw);
     void moveCursorTo(QPoint pos);

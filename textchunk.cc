@@ -81,7 +81,6 @@ TextChunk::cursorToLeft()
 bool
 TextChunk::cursorToRight()
 {
-    qDebug() << m_currentPos << m_text.size();
     if (m_currentPos == m_text.size()) {
         return false;
     }
@@ -142,6 +141,12 @@ void
 TextChunk::setCursorOffset(qreal offset)
 {
     m_cursorOffset = 0.0;
+
+    if (offset >= m_glyphRun.boundingRect().width()) {
+        m_currentPos = m_text.size();
+        return;
+    }
+
     for (int i = 0; i < m_glyphCount; i++) {
         if ((m_cursorOffset + (m_glyphs[i].x_advance / 64)) > offset) {
             m_currentPos = i;

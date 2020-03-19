@@ -20,6 +20,7 @@ class TextLine {
 
     bool cursorToLeft();
     bool cursorToRight();
+    void resetCursor(bool toLast = false);
     qreal cursorOffset();
     void setCursorOffset(qreal offset);
 
